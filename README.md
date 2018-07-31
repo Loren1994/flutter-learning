@@ -1,8 +1,5 @@
-# flutter_learning
+# flutter
 
-A new Flutter application.
+##### Flutter版V2EX
 
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+> 仅学习使用

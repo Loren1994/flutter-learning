@@ -3,40 +3,36 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(new App());
 
-class MyApp extends StatelessWidget {
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Loren\'s Demo',
+      title: 'V2EX',
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
-      home: new MyHomePage(title: 'Loren\'s Demo'),
+      home: new HomePage(title: 'V2EX'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _HomePageState createState() => new _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  String _batteryLevel = "";
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   static const platform = const MethodChannel('samples.flutter.io/battery');
+  String _batteryLevel = "";
+  int index = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+  //获取原生电量
   Future<Null> _getBatteryLevel() async {
     String batteryLevel;
     try {
@@ -52,36 +48,74 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  final List<Text> tabTexts = <Text>[
+    new Text('最新', style: new TextStyle(fontSize: 15.0)),
+    new Text('最热', style: new TextStyle(fontSize: 15.0))
+  ];
+  final List<Text> itemTexts = <Text>[
+    new Text('首页', style: new TextStyle(fontSize: 12.0)),
+    new Text('我的', style: new TextStyle(fontSize: 12.0))
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
+    final List<Tab> tabs = [];
+    for (int i = 0; i < tabTexts.length; i++) {
+      tabs.add(new Tab(
+        child: tabTexts[i],
+      ));
+    }
+    final items =
+        new List<BottomNavigationBarItem>.generate(itemTexts.length, (index) {
+      switch (index) {
+        case 0:
+          return new BottomNavigationBarItem(
+              icon: new Icon(Icons.home), title: itemTexts[index]);
+        case 1:
+          return new BottomNavigationBarItem(
+              icon: new Icon(Icons.account_circle), title: itemTexts[index]);
+      }
+    });
+    return new DefaultTabController(
+        child: new Scaffold(
+          appBar: new AppBar(
+            backgroundColor: Colors.orange,
+            title: _getTitle(),
+            bottom: new TabBar(
+              key: Key('home_tab'),
+              isScrollable: false,
+              tabs: tabs,
+              indicatorColor: Colors.white,
+              unselectedLabelColor: Colors.black,
+              labelColor: Colors.white,
             ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            new RaisedButton(
-              child: new Text('Get Battery Level'),
-              onPressed: _getBatteryLevel,
-            ),
-            new Text('电量:$_batteryLevel')
-          ],
+          ), // 标题
+          body: new TabBarView(children: [
+            new Icon(Icons.directions_car),
+            new Icon(Icons.directions_transit)
+          ]),
+//          drawer: null, //抽屉
+          bottomNavigationBar: new BottomNavigationBar(
+              onTap: _selectPosition,
+              currentIndex: index,
+              iconSize: 24.0,
+              items: items),
         ),
-      ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
-      ),
-    );
+        length: tabs.length);
+  }
+
+  _selectPosition(int index) {
+    if (this.index == index) return;
+    //TODO navigation
+
+    setState(() {
+      this.index = index;
+    });
+  }
+
+  _getTitle() {
+    return new Center(
+        child: new Text(this.itemTexts[index].data,
+            style: new TextStyle(fontSize: 20.0, color: Colors.white)));
   }
 }
