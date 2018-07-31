@@ -25,7 +25,8 @@ class _HomePageState extends State<HomePage>
         child: new Scaffold(
           appBar: new AppBar(
             titleSpacing: 0.0,
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.orangeAccent,
+            primary: true,
             title: new TabBar(
               isScrollable: false,
               tabs: tabs,

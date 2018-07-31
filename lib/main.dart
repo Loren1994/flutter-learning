@@ -54,7 +54,7 @@ class _AppPageState extends State<AppPage> {
         child: new Scaffold(
           appBar: new AppBar(
               elevation: 1.0,
-              backgroundColor: Colors.orange,
+              backgroundColor: Colors.orangeAccent,
               title: _getTitle()),
           body: isHome ? new HomePage() : new Person(),
           drawer: new Drawer(
