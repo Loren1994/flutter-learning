@@ -1,16 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_learning/pages/ContentDetail.dart';
 import 'package:flutter_learning/pages/HomePage.dart';
 import 'package:flutter_learning/pages/Person.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:flutter_learning/widget/HomeDrawer.dart';
 
 /** TODO-LIST
  * 1.网络请求的封装
  * 2.SP封装
  * 3.tab保存状态
  * 4.下拉列表组件
- * 5.
+ * 5.?tab/nav behavior
  */
 
 void main() => runApp(new App());
@@ -43,8 +43,7 @@ class _AppPageState extends State<AppPage> {
     new Text('首页', style: new TextStyle(fontSize: 12.0)),
     new Text('我的', style: new TextStyle(fontSize: 12.0))
   ];
-  var index = 0;
-  var isHome = true;
+  int selectNavIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -62,60 +61,30 @@ class _AppPageState extends State<AppPage> {
     return new DefaultTabController(
         child: new Scaffold(
           appBar: new AppBar(
-              elevation: 1.0,
-              backgroundColor: Colors.orangeAccent,
-              title: _getTitle()),
-          body: isHome ? new HomePage() : new Person(),
-          drawer: new Drawer(
-            child: new ListView(
-              children: <Widget>[
-                new UserAccountsDrawerHeader(
-                  accountName: new Text('Loren'),
-                  accountEmail: new Text('dayan805@163.com'),
-                  currentAccountPicture: new GestureDetector(
-                    onTap: () {},
-                    child: new CircleAvatar(
-                      backgroundImage: new NetworkImage(
-                          'https://avatars3.githubusercontent.com/u/19885732?s=460&v=4'),
-                    ),
-                  ),
-                  decoration: new BoxDecoration(
-                    color: Colors.blue,
-                  ),
-                ),
-                new ListTile(
-                    title: new Text('首页'),
-                    onTap: () {
-                      Fluttertoast.showToast(msg: "首页");
-                    }),
-                new ListTile(
-                  title: new Text('我的'),
-                  onTap: () {
-                    Fluttertoast.showToast(msg: "我的");
-                  },
-                ),
-              ],
-            ),
+              backgroundColor: Colors.orangeAccent, title: _getTitle()),
+          body: new IndexedStack(
+            children: <Widget>[new HomePage(), new Person()],
+            index: this.selectNavIndex,
           ),
+          drawer: new HomeDrawer(),
           bottomNavigationBar: new BottomNavigationBar(
+              items: items,
               onTap: _selectPosition,
-              currentIndex: index,
-              iconSize: 24.0,
-              items: items),
+              currentIndex: selectNavIndex,
+              iconSize: 24.0),
         ),
         length: items.length);
   }
 
   _selectPosition(int index) {
-    if (this.index == index) return;
+    if (this.selectNavIndex == index) return;
     setState(() {
-      this.index = index;
-      this.isHome = (index == 0);
+      this.selectNavIndex = index;
     });
   }
 
   _getTitle() {
-    return new Text(this.itemTexts[index].data,
+    return new Text(this.itemTexts[selectNavIndex].data,
         style: new TextStyle(fontSize: 20.0, color: Colors.white));
   }
 }

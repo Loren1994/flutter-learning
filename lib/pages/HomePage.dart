@@ -7,7 +7,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin {
   final List<Text> tabTexts = <Text>[
     new Text('最新', style: new TextStyle(fontSize: 15.0)),
     new Text('最热', style: new TextStyle(fontSize: 15.0))
@@ -23,21 +23,18 @@ class _HomePageState extends State<HomePage>
     }
     return new DefaultTabController(
         child: new Scaffold(
-          appBar: new AppBar(
-            titleSpacing: 0.0,
-            backgroundColor: Colors.orangeAccent,
-            primary: true,
-            title: new TabBar(
+          appBar: new TabBar(
               isScrollable: false,
               tabs: tabs,
-              indicatorColor: Colors.white,
+              indicatorColor: Colors.orangeAccent,
               unselectedLabelColor: Colors.black,
-              labelColor: Colors.white,
-            ),
-          ),
+              labelColor: Colors.orangeAccent),
           body: new TabBarView(
               children: [new HomeList(flag: 0), new HomeList(flag: 1)]),
         ),
         length: tabs.length);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
