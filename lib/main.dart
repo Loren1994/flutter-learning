@@ -4,6 +4,15 @@ import 'package:flutter_learning/pages/HomePage.dart';
 import 'package:flutter_learning/pages/Person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+
+/** TODO-LIST
+ * 1.网络请求的封装
+ * 2.SP封装
+ * 3.tab保存状态
+ * 4.下拉列表组件
+ * 5.
+ */
+
 void main() => runApp(new App());
 
 class App extends StatelessWidget {

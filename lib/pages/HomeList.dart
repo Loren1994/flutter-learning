@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_learning/constant/Api.dart';
 import 'package:flutter_learning/widget/ListItem.dart';
 
 class HomeList extends StatefulWidget {
@@ -10,14 +11,10 @@ class HomeList extends StatefulWidget {
   final int flag;
 
   @override
-  _HomeListState createState() => new _HomeListState(flag: flag);
+  _HomeListState createState() => new _HomeListState();
 }
 
-class _HomeListState extends State<StatefulWidget> {
-  _HomeListState({this.flag});
-
-  final int flag;
-
+class _HomeListState extends State<HomeList> {
   var result;
 
   @override
@@ -26,7 +23,7 @@ class _HomeListState extends State<StatefulWidget> {
         padding: const EdgeInsets.all(16.0),
         itemCount: result == null ? 0 : result.length,
         itemBuilder: (context, i) {
-          return new ListItem(result[i]);
+          return new ListItem(result: result[i]);
         });
   }
 
@@ -39,12 +36,7 @@ class _HomeListState extends State<StatefulWidget> {
   }
 
   Future<String> _getLatestData() async {
-    var url;
-    if (flag == 0) {
-      url = 'https://www.v2ex.com/api/topics/latest.json';
-    } else {
-      url = 'https://www.v2ex.com/api/topics/hot.json';
-    }
+    var url = widget.flag == 0 ? Api.LATEST_URL : Api.HOT_URL;
     var httpClient = new HttpClient();
     var request = await httpClient.getUrl(Uri.parse(url));
     var response = await request.close();
