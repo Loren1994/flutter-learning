@@ -76,7 +76,8 @@ class _PtrListState extends State<PtrList> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       key: refreshKey,
-      child: ListView.builder(
+      child: ListView.separated(
+        physics: BouncingScrollPhysics(),
         itemCount: list.length + 1,
         itemBuilder: (context, i) {
           if (i == list.length) {
@@ -88,6 +89,9 @@ class _PtrListState extends State<PtrList> {
           }
         },
         controller: _scrollController,
+        separatorBuilder: (BuildContext context, int index) {
+          return new Divider();
+        },
       ),
       onRefresh: () => refreshList(true),
     );
