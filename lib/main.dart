@@ -4,6 +4,7 @@ import 'package:flutter_learning/pages/ContentDetail.dart';
 import 'package:flutter_learning/pages/HomePage.dart';
 import 'package:flutter_learning/pages/Person.dart';
 import 'package:flutter_learning/widget/HomeDrawer.dart';
+import 'package:flutter_learning/widget/PtrList.dart';
 
 /** TODO-LIST
  * 1.网络请求的封装
@@ -41,6 +42,7 @@ class AppPage extends StatefulWidget {
 class _AppPageState extends State<AppPage> {
   final List<Text> itemTexts = <Text>[
     new Text('首页', style: new TextStyle(fontSize: 12.0)),
+    new Text('列表', style: new TextStyle(fontSize: 12.0)),
     new Text('我的', style: new TextStyle(fontSize: 12.0))
   ];
   int selectNavIndex = 0;
@@ -56,6 +58,9 @@ class _AppPageState extends State<AppPage> {
         case 1:
           return new BottomNavigationBarItem(
               icon: new Icon(Icons.account_circle), title: itemTexts[index]);
+        case 2:
+          return new BottomNavigationBarItem(
+              icon: new Icon(Icons.account_circle), title: itemTexts[index]);
       }
     });
     return new DefaultTabController(
@@ -63,7 +68,7 @@ class _AppPageState extends State<AppPage> {
           appBar: new AppBar(
               backgroundColor: Colors.orangeAccent, title: _getTitle()),
           body: new IndexedStack(
-            children: <Widget>[new HomePage(), new Person()],
+            children: <Widget>[new HomePage(), new PtrList(), new Person()],
             index: this.selectNavIndex,
           ),
           drawer: new HomeDrawer(),

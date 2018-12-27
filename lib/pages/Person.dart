@@ -9,7 +9,7 @@ class Person extends StatefulWidget {
 }
 
 class VisLayout extends State<Person> {
-  bool vis = false;
+  var vis = false;
 
   @override
   Widget build(BuildContext context) {
