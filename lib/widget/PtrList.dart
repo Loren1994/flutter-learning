@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_learning/constant/Api.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class PtrList extends StatefulWidget {
   @override
@@ -46,7 +45,6 @@ class _PtrListState extends State<PtrList> {
       });
     }
     if (!hasMore) {
-      Fluttertoast.showToast(msg: "暂无更多");
       debugPrint("暂无更多");
       return null;
     }
@@ -55,6 +53,7 @@ class _PtrListState extends State<PtrList> {
       refreshKey.currentState?.show(atTop: true);
     }
     var res = await _getLatestData();
+    if (!mounted) return null;
     setState(() {
       if (flag) {
         this.list = json.decode(res);
@@ -78,14 +77,48 @@ class _PtrListState extends State<PtrList> {
     return RefreshIndicator(
       key: refreshKey,
       child: ListView.builder(
-        itemCount: list?.length,
-        itemBuilder: (context, i) => ListTile(
+        itemCount: list.length + 1,
+        itemBuilder: (context, i) {
+          if (i == list.length) {
+            return _buildListFooter();
+          } else {
+            return ListTile(
               title: Text(list[i]["title"]),
-            ),
+            );
+          }
+        },
         controller: _scrollController,
       ),
       onRefresh: () => refreshList(true),
     );
+  }
+
+  Widget _buildListFooter() {
+    return new Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: hasMore
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: 12,
+                    width: 12,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.grey),
+                      strokeWidth: 2,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text("加载中", style: TextStyle(color: Colors.grey)),
+                  ),
+                ],
+              )
+            : Center(
+                child: Text(
+                "暂无更多",
+                style: TextStyle(color: Colors.grey),
+              )));
   }
 
   @override
