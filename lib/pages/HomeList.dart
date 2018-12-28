@@ -14,7 +14,8 @@ class HomeList extends StatefulWidget {
   _HomeListState createState() => new _HomeListState();
 }
 
-class _HomeListState extends State<HomeList> {
+class _HomeListState extends State<HomeList>
+    with AutomaticKeepAliveClientMixin {
   var result;
 
   @override
@@ -48,4 +49,7 @@ class _HomeListState extends State<HomeList> {
     super.initState();
     _decodeData();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

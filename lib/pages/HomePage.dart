@@ -6,8 +6,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage> {
   final List<Text> tabTexts = <Text>[
     new Text('最新', style: new TextStyle(fontSize: 15.0)),
     new Text('最热', style: new TextStyle(fontSize: 15.0))
@@ -34,7 +33,4 @@ class _HomePageState extends State<HomePage>
         ),
         length: tabs.length);
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
