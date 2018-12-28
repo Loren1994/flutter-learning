@@ -23,7 +23,7 @@ class _PtrListState extends State<PtrList> {
     refreshList(true);
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+          _scrollController.position.maxScrollExtent - 100) {
         if (pageIndex >= 2) {
           setState(() {
             hasMore = false;
