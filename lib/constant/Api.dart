@@ -2,6 +2,12 @@ class Api {
   //具体参数参考: https://github.com/djyde/V2EX-API
   static final host = "https://www.v2ex.com/";
 
+  //LOGIN
+  static final LOGIN_URL = "${host}signin";
+
+  //sign up
+  static final REGISTER_URL = "${host}signup";
+
   //最新主题
   static final LATEST_URL = "${host}api/topics/latest.json";
 
