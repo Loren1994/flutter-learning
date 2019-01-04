@@ -13,6 +13,7 @@ dependencies:
   html: any
   flutter_html: ^0.8.2
   url_launcher: ^4.0.3
+  intl: any
 
 dev_dependencies:
   flutter_test:

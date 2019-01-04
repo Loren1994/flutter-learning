@@ -21,7 +21,7 @@ class _HomeListState extends State<HomeList>
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.separated(
+    return ListView.separated(
         separatorBuilder: (context, int) {
           return Divider(height: 1);
         },
@@ -33,12 +33,14 @@ class _HomeListState extends State<HomeList>
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (BuildContext context) {
                 return ContentDetail(
-                    topicId: result[i]["id"],
-                    avatar: result[i]["member"]["avatar_large"],
-                    title: result[i]["title"],
-                    topicTag:
-                        "${result[i]["node"]["parent_node_name"]}/${result[i]["node"]["title"]}",
-                    username: result[i]["member"]["username"]);
+                  topicId: result[i]["id"],
+                  avatar: result[i]["member"]["avatar_large"],
+                  title: result[i]["title"],
+                  topicTag:
+                      "${result[i]["node"]["parent_node_name"]}/${result[i]["node"]["title"]}",
+                  username: result[i]["member"]["username"],
+                  createTime: result[i]["created"],
+                );
               }));
             },
           );

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_learning/constant/Api.dart';
+import 'package:flutter_learning/constant/Utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContentDetail extends StatefulWidget {
@@ -14,12 +15,14 @@ class ContentDetail extends StatefulWidget {
     this.title,
     this.username,
     this.topicTag,
+    this.createTime,
   }) : super(key: key);
   var topicId;
   var avatar;
   var title;
   var username;
   var topicTag;
+  var createTime;
 
   @override
   State<StatefulWidget> createState() {
@@ -31,15 +34,17 @@ class _ContentDetail extends State<ContentDetail> {
   var result = "";
   var node;
   var noContent = false;
+  var repliesList = [];
 
   @override
   void initState() {
     getDetailData();
+    getRepliesData();
     super.initState();
   }
 
   getDetailData() async {
-    var res = await _getLatestData();
+    var res = await _getTopicData();
     if (!mounted) return;
     setState(() {
       this.node = json.decode(res)[0];
@@ -48,7 +53,16 @@ class _ContentDetail extends State<ContentDetail> {
     });
   }
 
-  Future<String> _getLatestData() async {
+  getRepliesData() async {
+    var res = await _getRepliesData();
+    if (!mounted) return;
+    setState(() {
+      this.repliesList = json.decode(res);
+    });
+    print("回复数量:${this.repliesList.length}");
+  }
+
+  Future<String> _getTopicData() async {
     var url = "${Api.TOPIC_URL}?id=${widget.topicId}";
     var httpClient = new HttpClient();
     var request = await httpClient.getUrl(Uri.parse(url));
@@ -56,8 +70,16 @@ class _ContentDetail extends State<ContentDetail> {
     return await response.transform(utf8.decoder).join();
   }
 
+  Future<String> _getRepliesData() async {
+    var url = "${Api.REPLY_URL}?topic_id=${widget.topicId}";
+    var httpClient = new HttpClient();
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    return await response.transform(utf8.decoder).join();
+  }
+
   Widget _buildTitle() {
-    var url_head = "https://${widget.avatar.toString().substring(2)}";
+    var urlHead = "https:${widget.avatar}";
     return Container(
       child: Column(
         children: <Widget>[
@@ -76,7 +98,7 @@ class _ContentDetail extends State<ContentDetail> {
                   Row(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(url_head),
+                        backgroundImage: NetworkImage(urlHead),
                         radius: 12,
                       ),
                       Padding(
@@ -98,7 +120,74 @@ class _ContentDetail extends State<ContentDetail> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 4, bottom: 8),
+                      child: Text(
+                        Utils.transToDate(widget.createTime),
+                        style: TextStyle(color: Colors.grey),
+                      )),
                 ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReplies() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 8, bottom: 8),
+          child: Text(
+            "${repliesList == null ? 0 : repliesList.length} 回复 | 直到 ${Utils.transToDateNow()}",
+            style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+          ),
+        ),
+        ListView.separated(
+            shrinkWrap: true, //否则list占全屏导致不显示
+            physics: new NeverScrollableScrollPhysics(),//嵌套时禁止滑动,否则不能触摸回复列表来滑动
+            separatorBuilder: (context, int) {
+              return Divider(height: 1);
+            },
+            itemCount: repliesList == null ? 0 : repliesList.length,
+            itemBuilder: (context, i) {
+              return _buildRepliesItem(i);
+            })
+      ],
+    );
+  }
+
+  Widget _buildRepliesItem(int index) {
+    return Padding(
+      padding: EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    "https:${repliesList[index]["member"]["avatar_large"]}"),
+                radius: 12,
+              ),
+              Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Text(
+                    "${repliesList[index]["member"]["username"]} 回复于 ",
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  )),
+              Text(
+                Utils.transToDate(repliesList[index]["created"]),
+                style:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Text(repliesList[index]["content"]),
           )
         ],
       ),
@@ -130,19 +219,19 @@ class _ContentDetail extends State<ContentDetail> {
                   _buildTitle(),
                   this.noContent
                       ? Container(
-                          margin: EdgeInsets.only(top: 200),
+                          margin: EdgeInsets.only(top: 50),
                           child: Text(
                             "无内容",
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: 16),
                           ),
                         )
                       : Html(
-                          padding: EdgeInsets.only(top: 20),
                           onLinkTap: (url) {
                             _launchURL(url);
                           },
                           data: this.result,
-                        )
+                        ),
+                  _buildReplies()
                 ],
               ),
             ),
