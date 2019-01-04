@@ -35,7 +35,10 @@ class _HomeListState extends State<HomeList>
                 return ContentDetail(
                     topicId: result[i]["id"],
                     avatar: result[i]["member"]["avatar_large"],
-                    title: result[i]["title"]);
+                    title: result[i]["title"],
+                    topicTag:
+                        "${result[i]["node"]["parent_node_name"]}/${result[i]["node"]["title"]}",
+                    username: result[i]["member"]["username"]);
               }));
             },
           );

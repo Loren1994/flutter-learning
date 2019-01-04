@@ -6,8 +6,8 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
-
 import io.flutter.app.FlutterActivity
+import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity : FlutterActivity() {
@@ -17,8 +17,7 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(this)
-
-        io.flutter.plugin.common.MethodChannel(flutterView, CHANNEL)
+        MethodChannel(flutterView, CHANNEL)
                 .setMethodCallHandler { methodCall, result ->
                     if (methodCall.method!!.contentEquals("getBatteryLevel")) {
                         val bal = getBatteryLevel()
