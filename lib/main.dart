@@ -26,6 +26,7 @@ class App extends StatelessWidget {
         ),
         home: new AppPage(title: 'V2EX'),
         routes: <String, WidgetBuilder>{
+          //定义静态路由，但不能传递参数
           '/detail': (BuildContext context) => new ContentDetail()
         });
   }
@@ -57,7 +58,7 @@ class _AppPageState extends State<AppPage> {
               icon: new Icon(Icons.home), title: itemTexts[index]);
         case 1:
           return new BottomNavigationBarItem(
-              icon: new Icon(Icons.account_circle), title: itemTexts[index]);
+              icon: new Icon(Icons.view_list), title: itemTexts[index]);
         case 2:
           return new BottomNavigationBarItem(
               icon: new Icon(Icons.account_circle), title: itemTexts[index]);

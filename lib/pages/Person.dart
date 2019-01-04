@@ -76,9 +76,6 @@ class VisLayout extends State<Person> {
               margin: EdgeInsets.only(top: 100),
               child: InkWell(
                 onTap: () {
-//                  this.setState(() {
-//                      vis = true;
-//                  });
                   if (usernameController.text.trim().isEmpty ||
                       passwordController.text.trim().isEmpty) {
                     Fluttertoast.showToast(msg: "请填入完整账号信息");
@@ -117,7 +114,12 @@ class VisLayout extends State<Person> {
               child: RaisedButton(
                   color: Colors.orangeAccent,
                   highlightColor: Colors.orangeAccent[700],
-                  onPressed: () => Fluttertoast.showToast(msg: "注册"),
+                  onPressed: () {
+                    Fluttertoast.showToast(msg: "注册");
+                    this.setState(() {
+                      vis = true;
+                    });
+                  },
                   colorBrightness: Brightness.dark,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),

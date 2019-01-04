@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_learning/constant/Api.dart';
+import 'package:flutter_learning/pages/ContentDetail.dart';
 import 'package:flutter_learning/widget/ListItem.dart';
 
 class HomeList extends StatefulWidget {
@@ -20,11 +21,24 @@ class _HomeListState extends State<HomeList>
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+    return new ListView.separated(
+        separatorBuilder: (context, int) {
+          return Divider(height: 1);
+        },
         itemCount: result == null ? 0 : result.length,
         itemBuilder: (context, i) {
-          return new ListItem(result: result[i]);
+          return InkWell(
+            child: ListItem(result: result[i]),
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return ContentDetail(
+                    topicId: result[i]["id"],
+                    avatar: result[i]["member"]["avatar_large"],
+                    title: result[i]["title"]);
+              }));
+            },
+          );
         });
   }
 

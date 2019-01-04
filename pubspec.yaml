@@ -11,6 +11,7 @@ dependencies:
   shared_preferences: ^0.4.2
   dio: ^1.0.13
   html: any
+  flutter_html: ^0.8.2
 
 dev_dependencies:
   flutter_test:
