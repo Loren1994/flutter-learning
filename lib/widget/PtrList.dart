@@ -37,7 +37,7 @@ class _PtrListState extends State<PtrList> {
     });
   }
 
-  Future<Null> refreshList(flag) async {
+  refreshList(flag) async {
     if (flag) {
       setState(() {
         hasMore = true;
@@ -46,14 +46,14 @@ class _PtrListState extends State<PtrList> {
     }
     if (!hasMore) {
       debugPrint("暂无更多");
-      return null;
+      return;
     }
     debugPrint("请求页数:$pageIndex");
     if (flag) {
       refreshKey.currentState?.show(atTop: true);
     }
     var res = await _getLatestData();
-    if (!mounted) return null;
+    if (!mounted) return;
     setState(() {
       if (flag) {
         this.list = json.decode(res);
@@ -61,7 +61,6 @@ class _PtrListState extends State<PtrList> {
         this.list.addAll(json.decode(res));
       }
     });
-    return null;
   }
 
   Future<String> _getLatestData() async {

@@ -17,19 +17,19 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(this)
-        MethodChannel(flutterView, CHANNEL)
-                .setMethodCallHandler { methodCall, result ->
-                    if (methodCall.method!!.contentEquals("getBatteryLevel")) {
-                        val bal = getBatteryLevel()
-                        if (bal != -1) {
-                            result.success(bal)
-                        } else {
-                            result.error("UNAVAILABLE", "getBatteryLevel error", null)
-                        }
-                    } else {
-                        result.notImplemented()
-                    }
-                }
+//        MethodChannel(flutterView, CHANNEL)
+//                .setMethodCallHandler { methodCall, result ->
+//                    if (methodCall.method!!.contentEquals("getBatteryLevel")) {
+//                        val bal = getBatteryLevel()
+//                        if (bal != -1) {
+//                            result.success(bal)
+//                        } else {
+//                            result.error("UNAVAILABLE", "getBatteryLevel error", null)
+//                        }
+//                    } else {
+//                        result.notImplemented()
+//                    }
+//                }
     }
 
     private fun getBatteryLevel(): Int {

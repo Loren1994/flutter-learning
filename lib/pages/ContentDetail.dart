@@ -59,7 +59,6 @@ class _ContentDetail extends State<ContentDetail> {
     setState(() {
       this.repliesList = json.decode(res);
     });
-    print("回复数量:${this.repliesList.length}");
   }
 
   Future<String> _getTopicData() async {
@@ -219,7 +218,7 @@ class _ContentDetail extends State<ContentDetail> {
                   _buildTitle(),
                   this.noContent
                       ? Container(
-                          margin: EdgeInsets.only(top: 50),
+                          margin: EdgeInsets.all(30),
                           child: Text(
                             "无内容",
                             style: TextStyle(fontSize: 16),

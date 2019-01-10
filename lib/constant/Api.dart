@@ -1,5 +1,6 @@
 class Api {
   //具体参数参考: https://github.com/djyde/V2EX-API
+  //https://pagespeed.v2ex.com/t/33784
   static final host = "https://www.v2ex.com/";
 
   //LOGIN

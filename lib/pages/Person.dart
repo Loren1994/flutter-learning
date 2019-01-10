@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_learning/constant/Api.dart';
@@ -13,36 +16,47 @@ class Person extends StatefulWidget {
 
 class VisLayout extends State<Person> {
   var vis = false;
-  var usernameController = TextEditingController();
+  var usernameController = TextEditingController(text: "Loren1994");
   var passwordController = TextEditingController();
+  var personInfo;
 
-  Future<String> login() async {
-    var dio = Dio();
-    dio.options.validateStatus = (int status) {
-      print("status code = $status");
-      return true;
-    };
-    var resp = await dio.get(Api.LOGIN_URL);
-    var dom = parse(resp.data.toString()).getElementsByClassName("sl");
-    print(dom);
-    var nameArr = dom[0].attributes["name"];
-    var pwdArr = dom[1].attributes["name"];
-    var temp = parse(resp.data.toString()).getElementsByClassName("cell")[0];
-    var onceValue = temp.children[0].attributes["onclick"]
-        .split("?once=")[1]
-        .substring(0, 5);
-    print(onceValue);
-    dio.options.headers = {
-      "Origin": Api.host,
-      "Referer": Api.LOGIN_URL,
-      "Content-Type": "application/x-www-form-urlencoded"
-    };
-    var response = await dio.post(Api.LOGIN_URL, data: {
-      nameArr: usernameController.text,
-      "once": onceValue,
-      pwdArr: passwordController.text
+  getPersonData() async {
+    var res = await _getPersonData();
+    var jsonRes = json.decode(res);
+    if (jsonRes["status"] != "found") {
+      Fluttertoast.showToast(msg: jsonRes["message"]);
+      return;
+    }
+    if (!mounted) return;
+    setState(() {
+      this.personInfo = jsonRes;
     });
-    print(response.data.toString());
+  }
+
+  Future<String> _getPersonData() async {
+    var url = "${Api.MEMBER_INFO_URL}?username=${usernameController.text}";
+    var httpClient = new HttpClient();
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    return await response.transform(utf8.decoder).join();
+  }
+
+  Widget _buildPerson() {
+    return Column(
+      children: <Widget>[
+        CircleAvatar(
+          backgroundImage: NetworkImage(
+              personInfo != null ? "https:${personInfo["avatar_large"]}" : ""),
+          radius: 30,
+        ),
+        Text(personInfo != null ? personInfo["username"] : ""),
+        Text(personInfo != null && personInfo["bio"] != null
+            ? personInfo["bio"]
+            : ""),
+        Text(
+            personInfo != null ? "V2EX第${personInfo["id"].toString()}位会员" : ""),
+      ],
+    );
   }
 
   @override
@@ -76,12 +90,8 @@ class VisLayout extends State<Person> {
               margin: EdgeInsets.only(top: 100),
               child: InkWell(
                 onTap: () {
-                  if (usernameController.text.trim().isEmpty ||
-                      passwordController.text.trim().isEmpty) {
-                    Fluttertoast.showToast(msg: "请填入完整账号信息");
-                    return;
-                  }
-                  print(login());
+                  Fluttertoast.showToast(msg: "登录API未开放");
+//                  login();
                 },
                 child: DecoratedBox(
                   decoration: BoxDecoration(
@@ -115,7 +125,11 @@ class VisLayout extends State<Person> {
                   color: Colors.orangeAccent,
                   highlightColor: Colors.orangeAccent[700],
                   onPressed: () {
-                    Fluttertoast.showToast(msg: "注册");
+                    if (usernameController.text.trim().isEmpty) {
+                      Fluttertoast.showToast(msg: "请填入正确用户名");
+                      return;
+                    }
+                    getPersonData();
                     this.setState(() {
                       vis = true;
                     });
@@ -124,9 +138,8 @@ class VisLayout extends State<Person> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 105, vertical: 10),
-                    child: Text("注册"),
+                    padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
+                    child: Text("用户信息"),
                   )),
             ),
           ],
@@ -134,13 +147,57 @@ class VisLayout extends State<Person> {
       ),
       Offstage(
         offstage: !vis,
-        child: RaisedButton(
-          onPressed: () => this.setState(() {
-                vis = false;
-              }),
-          child: Text("test text"),
-        ),
+        child: Center(
+            child: Column(
+          children: <Widget>[
+            FlatButton(
+                color: Colors.grey,
+                highlightColor: Colors.grey[700],
+                onPressed: () {
+                  this.setState(() {
+                    vis = false;
+                  });
+                },
+                colorBrightness: Brightness.dark,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 90, vertical: 10),
+                  child: Text("返回"),
+                )),
+            _buildPerson()
+          ],
+        )),
       )
     ]);
+  }
+
+  Future<String> login() async {
+    var dio = Dio();
+    dio.options.validateStatus = (int status) {
+      print("status code = $status");
+      return true;
+    };
+    var resp = await dio.get(Api.LOGIN_URL);
+    var dom = parse(resp.data.toString()).getElementsByClassName("sl");
+    print(dom);
+    var nameArr = dom[0].attributes["name"];
+    var pwdArr = dom[1].attributes["name"];
+    var temp = parse(resp.data.toString()).getElementsByClassName("cell")[0];
+    var onceValue = temp.children[0].attributes["onclick"]
+        .split("?once=")[1]
+        .substring(0, 5);
+    print(onceValue);
+    dio.options.headers = {
+      "Origin": Api.host,
+      "Referer": Api.LOGIN_URL,
+      "Content-Type": "application/x-www-form-urlencoded"
+    };
+    var response = await dio.post(Api.LOGIN_URL, data: {
+      nameArr: usernameController.text,
+      "once": onceValue,
+      pwdArr: passwordController.text
+    });
+    print(response.data.toString());
   }
 }
