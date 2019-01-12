@@ -19,11 +19,8 @@ class _PtrListState extends State<PtrList> {
 
   @override
   void initState() {
-    super.initState();
-    refreshList(true);
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent - 100) {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
         if (pageIndex >= 2) {
           setState(() {
             hasMore = false;
@@ -35,6 +32,8 @@ class _PtrListState extends State<PtrList> {
         refreshList(false);
       }
     });
+    refreshList(true);
+    super.initState();
   }
 
   refreshList(flag) async {
